@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Portfolio</title>
+</head>
+<body>
+  <h1>Your Name</h1>
+  <p>Computer science graduate. Python, JavaScript, AWS.</p>
+
+  <h2>Projects</h2>
+  <p>Coming soon.</p>
+
+  <h2>Contact</h2>
+  <form id="contact-form">
+    <input name="name" placeholder="Your name" required><br>
+    <input name="email" type="email" placeholder="Your email" required><br>
+    <textarea name="message" placeholder="Message" required></textarea><br>
+    <button type="submit">Send</button>
+  </form>
+  <p id="status"></p>
+
+  <p>Visitors: <span id="count">-</span></p>
+
+  <script>
+    const API = "https://n8ym5b5bkk.execute-api.ap-southeast-2.amazonaws.com";
+
+    fetch(API + "/count")
+      .then(r => r.json())
+      .then(d => { document.getElementById("count").textContent = d.count; })
+      .catch(() => { document.getElementById("count").textContent = "unavailable"; });
+
+    document.getElementById("contact-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const status = document.getElementById("status");
+      status.textContent = "Sending...";
+      try {
+        const res = await fetch(API + "/contact", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(Object.fromEntries(new FormData(form)))
+        });
+        const data = await res.json();
+        status.textContent = data.message;
+        if (res.ok) form.reset();
+      } catch (err) {
+        status.textContent = "Something went wrong. Please try again.";
+      }
+    });
+  </script>
+</body>
