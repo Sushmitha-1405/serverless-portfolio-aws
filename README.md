@@ -63,4 +63,4 @@ Everything is pay-per-use with no always-on servers. Usage stays inside AWS Free
 
 ## Author
 
-Your Name
+Sushmitha Mamilla
